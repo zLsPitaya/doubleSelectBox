@@ -1,0 +1,2 @@
+# doubleSelectBox
+一个基于jQuery、bootstrap样式的可配置双边下拉选框插件
