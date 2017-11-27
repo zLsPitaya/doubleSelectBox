@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>doubleBox</title>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/PDSS_SelectBox.css" />
+    <style>
+        .main-container {
+            width: 60%;
+            margin: 0 auto;
+            margin-top: 3%;
+            padding: 20px 40px;
+            border: 1px solid #ddd;
+            background: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="http://localhost:3000" method="get">
+        <div class="main-container">
+            <select id="SelectBox1" multiple="multiple" name="myName1"></select>
+        </div>
+        <div style="width: 100%;text-align:center">
+            <input type="submit" class="btn" value="submit"></input>
+        </div>
+    </form>
+
+    <script src="jquery-1.7.1.min.js"></script>
+    <script src="PDSS_SelectBox.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            var optionFields = [{
+                    text: 'abc'
+                }, {
+                    text: 'deg'
+                }, {
+                    text: 'hij'
+                }],
+                selectedFields = [{
+                    text: 'klm'
+                }, {
+                    text: 'nop'
+                }, {
+                    text: 'qwe'
+                }];
+
+            new PDSS_SelectBox($("#SelectBox1"), {
+                //usePdssStyle: true,
+                filterPlaceHolder: "请输入需要过滤的关键字",
+                nonSelectedLabel: "请选中您要操作的项目",
+                selectedLabel: "已选中项目",
+                selectorMinimalHeight: 100,
+                optionFields: optionFields,
+                selectedFields: selectedFields,
+                optionValue: "text",
+                optionText: "text"
+            });
+        })
+    </script>
+</body>
+
+</html>
