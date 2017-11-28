@@ -1,14 +1,15 @@
-(function ($, w, undefined) {
+(function ($, w, d, undefined) {
     var defaults = {
-        usePdssStyle: false,
-        filterPlaceHolder: "Filter",
-        nonSelectedLabel: "未选中项目",
-        selectedLabel: "已选中项目",
-        selectorMinimalHeight: 150,
-        optionFields: [],
-        selectedFields: [],
-        optionValue: "value",
-        optionText: "text"
+        usePdssStyle: false, //是否使用PDSS样式
+        filterPlaceHolder: "Filter", //过滤框提示
+        nonSelectedLabel: "未选中项目", //未选中项目的标题
+        selectedLabel: "已选中项目", //已选中项目的标题
+        selectorMinimalHeight: 150, //下拉框的高度
+        doubleMove: true, //选项是否有双击事件
+        optionFields: [], //未选中项
+        selectedFields: [], //已选中项
+        optionValue: "value", //下拉框的值value
+        optionText: "text" //下拉框的文本值text
     }
 
     function PDSS_SelectBox(element, options) {
@@ -56,9 +57,9 @@
      * @param {*} 被添加选项的下拉框
      * @param {*} 是否全部移动
      */
-    function moveEvent(firstSelectBox, secondSelectBox, flag) {
+    function moveEvent(firstSelectBox, secondSelectBox, allFlag) {
         firstSelectBox.children().each(function (index, item) {
-            if (flag) {
+            if (allFlag) {
                 secondSelectBox.append(item);
             } else {
                 if (item.selected) {
@@ -162,7 +163,7 @@
             this.setBtnboxsStyleInit(this.settings.selectorMinimalHeight);
             this.setAllItem(this.settings.optionFields);
             this.setSeletedItem(this.settings.selectedFields);
-            this.setDoubleMove();
+            this.setDoubleMove(this.settings.doubleMove);
             this.element.hide();
             bindEvents(this);
         },
@@ -280,19 +281,25 @@
         /**
          * 设置选项的双击事件
          */
-        setDoubleMove: function () {
-            var self = this;
-            this.elements.selectBoxs.children().each(function (index, item) {
-                $(item).on("dblclick", function () {
-                    if ($(self.elements.select1).find(item).length === 0) {
-                        self.elements.select1.append(item);
-                    } else {
-                        self.elements.select2.append(item);
-                    }
+        setDoubleMove: function (value) {
+            this.settings.doubleMove = value;
+            if (value) {
+                var self = this;
+                self.elements.selectBoxs.children().each(function (index, item) {
+                    $(item).on("dblclick", function () {
+                        if ($(self.elements.select1).find(item).length === 0) {
+                            self.elements.select1.append(item);
+                        } else {
+                            self.elements.select2.append(item);
+                        }
+                    })
                 })
-            })
+            } else {
+                this.elements.select1.off("dblclick");
+                this.elements.select2.off("dblclick");
+            }
         }
     }
 
     w.PDSS_SelectBox = PDSS_SelectBox;
-})(jQuery, window)
+})(jQuery, window, document)
