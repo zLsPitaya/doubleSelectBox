@@ -1,4 +1,4 @@
-(function($, w, undefined) {
+(function ($, w, undefined) {
     var defaults = {
         usePdssStyle: false,
         filterPlaceHolder: "Filter",
@@ -19,27 +19,27 @@
 
     /**
      * 过滤事件
-     * @param {*} 控件 
+     * @param {*} 过滤输入框 
      * @param {*} 需要过滤下拉框
      */
-    function filterEvent(control, selectBox) {
-        var txt = $(control).val();
+    function filterEvent(inputBox, selectBox) {
+        var txt = $(inputBox).val();
         if ($.browser.msie) { //IE
-            selectBox.children().each(function(index, item) {
-                if ($(item).html().indexOf(txt) != -1) {
-                    if ($(item).is("span")) {
+            selectBox.children().each(function (index, item) {
+                if ($(item).is("option")) {
+                    if ($(item).html().indexOf(txt) == -1) {
+                        $(item).wrap("<SPAN></SPAN>");
+                    }
+                } else {
+                    if ($(item).children().html().indexOf(txt) != -1) {
                         var h = $(item).html();
                         $(h).insertBefore(item);
                         $(item).remove();
                     }
-                } else {
-                    if (!$(item).is("span")) {
-                        $(item).wrap("<SPAN></SPAN>");
-                    }
                 }
-            });
+            })
         } else {
-            selectBox.children().each(function(index, item) {
+            selectBox.children().each(function (index, item) {
                 if ($(item).html().indexOf(txt) != -1) {
                     $(item).show();
                 } else {
@@ -57,7 +57,7 @@
      * @param {*} 是否全部移动
      */
     function moveEvent(firstSelectBox, secondSelectBox, flag) {
-        firstSelectBox.children().each(function(index, item) {
+        firstSelectBox.children().each(function (index, item) {
             if (flag) {
                 secondSelectBox.append(item);
             } else {
@@ -73,7 +73,7 @@
      * @param {*} 上升
      */
     function sortOption(selectBox, upFlag) {
-        selectBox.find("option:selected").each(function(index, item) {
+        selectBox.find("option:selected").each(function (index, item) {
             var _item = $(item);
             if (upFlag) {
                 var target = _item.prev();
@@ -90,43 +90,43 @@
      * @param {*} 主容器 
      */
     function bindEvents(selectListBox) {
-        selectListBox.elements.form.submit(function(e) {
+        selectListBox.elements.form.submit(function (e) {
             selectListBox.element.empty();
             var result = "";
-            selectListBox.elements.select2.children().each(function(index, item) {
+            selectListBox.elements.select2.children().each(function (index, item) {
                 result += "<option value='" + item.value + "' selected >" + item.text + "</option>";
             })
             selectListBox.element.append(result);
             return true;
         });
-        selectListBox.elements.moveButton.on("click", function() {
+        selectListBox.elements.moveButton.on("click", function () {
             moveEvent(selectListBox.elements.select1, selectListBox.elements.select2);
         });
-        selectListBox.elements.moveAllButton.on("click", function() {
+        selectListBox.elements.moveAllButton.on("click", function () {
             moveEvent(selectListBox.elements.select1, selectListBox.elements.select2, true);
         });
-        selectListBox.elements.removeButton.on("click", function() {
+        selectListBox.elements.removeButton.on("click", function () {
             moveEvent(selectListBox.elements.select2, selectListBox.elements.select1);
         });
-        selectListBox.elements.removeAllButton.on("click", function() {
+        selectListBox.elements.removeAllButton.on("click", function () {
             moveEvent(selectListBox.elements.select2, selectListBox.elements.select1, true);
         });
-        selectListBox.elements.upButton.on("click", function() {
+        selectListBox.elements.upButton.on("click", function () {
             sortOption(selectListBox.elements.select2, true);
         });
-        selectListBox.elements.downButton.on("click", function() {
+        selectListBox.elements.downButton.on("click", function () {
             sortOption(selectListBox.elements.select2);
         });
-        selectListBox.elements.filterInput1.on("change keyup", function(e) {
+        selectListBox.elements.filterInput1.on("change keyup", function (e) {
             filterEvent(this, selectListBox.elements.select1);
         })
-        selectListBox.elements.filterInput2.on("change keyup", function(e) {
+        selectListBox.elements.filterInput2.on("change keyup", function (e) {
             filterEvent(this, selectListBox.elements.select2);
         })
     }
 
     PDSS_SelectBox.prototype = {
-        init: function() {
+        init: function () {
             this.container = $("" + '<div class="bootstrap-duallistbox-container">' + ' <div class="box1">' + "   <label></label>" + '   <input class="filter form-control ue-form" type="text" >' + '   <select multiple="multiple"></select>' + " </div>" + ' <div class="btn-box">' + '     <input type="button" class="btn db-btn move" value=">" />' + '     <input type="button" class="btn db-btn moveall" value=">>"  />' + '<p class="clearfix" style="margin-bottom:20px"></p>' + '     <input type="button" class="btn db-btn remove" value="<" />' + '     <input type="button" class="btn db-btn removeall" value="<<" />' + "     </button>" + " </div>" + ' <div class="box2">' + "   <label></label>" + '   <input class="filter form-control ue-form" type="text" >' + '   <select multiple="multiple"></select>' + " </div>" + ' <div class="settingUp-btns">' + '    <input type="button" class="btn db-btn upBtn" value="↑" />' + '    <input type="button" class="btn db-btn downBtn" value="↓"  />' + " </div>" + "</div>").insertBefore(this.element);
             this.elements = {
                 originalSelect: this.element,
@@ -166,7 +166,10 @@
             this.element.hide();
             bindEvents(this);
         },
-        setBootstrap2Compatible: function(value) {
+        /**
+         * 设置Bootstrap样式到模板
+         */
+        setBootstrap2Compatible: function (value) {
             this.settings.usePdssStyle = value;
             if (!value) {
                 this.container.removeClass("row-fluid bs2compatible").addClass("row");
@@ -190,7 +193,7 @@
         /**
          * 初始化设置按钮组的样式
          */
-        setBtnboxsStyleInit: function(value) {
+        setBtnboxsStyleInit: function (value) {
             if (value < 150) {
                 value = 150;
             }
@@ -204,7 +207,7 @@
         /**
          * 设置全部待选项下拉框的标签title
          */
-        setNonSelectedLabel: function(value) {
+        setNonSelectedLabel: function (value) {
             this.settings.nonSelectedLabel = value;
             if (value) {
                 this.elements.label1.show().html(value)
@@ -216,7 +219,7 @@
         /**
          * 设置已选中的下拉框的标签title
          */
-        setSelectedLabel: function(value) {
+        setSelectedLabel: function (value) {
             this.settings.selectedLabel = value;
             if (value) {
                 this.elements.label2.show().html(value)
@@ -228,16 +231,15 @@
         /**
          * 设置过滤的输入框提示
          */
-        setFilterPlaceHolder: function(value) {
+        setFilterPlaceHolder: function (value) {
             $(this.elements.filterInput1).attr("placeHolder", value);
             $(this.elements.filterInput2).attr("placeHolder", value);
             return this.element;
         },
         /**
-         * 设置下拉框高度
+         * 设置下拉框高度(最低150px)
          */
-        setSelectOrMinimalHeight: function(value) {
-            this.settings.selectorMinimalHeight = value;
+        setSelectOrMinimalHeight: function (value) {
             var height = this.element.height();
             if (this.elements.select1.height() < value) {
                 height = value;
@@ -252,10 +254,10 @@
         /**
          * 设置所有选择项
          */
-        setAllItem: function(value) {
+        setAllItem: function (value) {
             var self = this,
                 h = "";
-            $(value).each(function(index, item) {
+            $(value).each(function (index, item) {
                 h += "<option value='" + item[self.settings.optionValue] + "'>" +
                     item[self.settings.optionText] + "</option>";
             })
@@ -265,10 +267,10 @@
         /**
          * 设置所有已选中项
          */
-        setSeletedItem: function(value) {
+        setSeletedItem: function (value) {
             var self = this,
                 h = "";
-            $(value).each(function(index, item) {
+            $(value).each(function (index, item) {
                 h += "<option value='" + item[self.settings.optionValue] + "'>" +
                     item[self.settings.optionText] + "</option>";
             })
@@ -278,10 +280,10 @@
         /**
          * 设置选项的双击事件
          */
-        setDoubleMove: function() {
+        setDoubleMove: function () {
             var self = this;
-            this.elements.selectBoxs.children().each(function(index, item) {
-                $(item).on("dblclick", function() {
+            this.elements.selectBoxs.children().each(function (index, item) {
+                $(item).on("dblclick", function () {
                     if ($(self.elements.select1).find(item).length === 0) {
                         self.elements.select1.append(item);
                     } else {
